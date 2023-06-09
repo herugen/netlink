@@ -1040,7 +1040,7 @@ func (h *Handle) RouteListFiltered(family int, filter *Route, filterMask uint64)
 				continue
 			}
 		}
-		route, err := deserializeRoute(m)
+		route, err := DeserializeRoute(m)
 		if err != nil {
 			return nil, err
 		}
@@ -1084,8 +1084,8 @@ func (h *Handle) RouteListFiltered(family int, filter *Route, filterMask uint64)
 	return res, nil
 }
 
-// deserializeRoute decodes a binary netlink message into a Route struct
-func deserializeRoute(m []byte) (Route, error) {
+// DeserializeRoute decodes a binary netlink message into a Route struct
+func DeserializeRoute(m []byte) (Route, error) {
 	msg := nl.DeserializeRtMsg(m)
 	attrs, err := nl.ParseRouteAttr(m[msg.Len():])
 	if err != nil {
@@ -1436,7 +1436,7 @@ func (h *Handle) RouteGetWithOptions(destination net.IP, options *RouteGetOption
 
 	var res []Route
 	for _, m := range msgs {
-		route, err := deserializeRoute(m)
+		route, err := DeserializeRoute(m)
 		if err != nil {
 			return nil, err
 		}
@@ -1534,7 +1534,7 @@ func routeSubscribeAt(newNs, curNs netns.NsHandle, ch chan<- RouteUpdate, done <
 					}
 					continue
 				}
-				route, err := deserializeRoute(m.Data)
+				route, err := DeserializeRoute(m.Data)
 				if err != nil {
 					if cberr != nil {
 						cberr(err)
